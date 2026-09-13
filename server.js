@@ -74,22 +74,51 @@ const ItemSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 const Item = mongoose.model('Item', ItemSchema);
-
-// 2. Map incoming category values from frontend payload
-app.post('/api/items', async (req, res) => {
+/ A. Helper Security Gateway Middleware verification layer
+const authMiddleware = (req, res, next) => {
     try {
-        const newItem = new Item({ 
-            text: req.body.itemName,
-            amount: parseFloat(req.body.itemAmount),
-            category: req.body.itemCategory // Capture the category selection
-        });
-        const savedItem = await newItem.save();
-        res.json({ message: "Successfully saved!", item: savedItem });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to save item." });
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) return res.status(401).json({ error: "Access Denied. Please log in first." });
+        
+        const verified = jwt.verify(token, JWT_SECRET);
+        req.user = verified; // Injects validated user information fields package
+        next();
+    } catch (err) {
+        res.status(401).json({ error: "Invalid login token." });
+    }
+};
+
+// B. REGISTER EndPoint Route API
+app.post('/api/auth/register', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newUser = new User({ username, password: hashedPassword });
+        await newUser.save();
+        res.json({ message: "Registration successful!" });
+    } catch (err) {
+        res.status(400).json({ error: "Username already exists." });
     }
 });
 
+// C. LOGIN EndPoint Route API
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        if (!user) return res.status(400).json({ error: "User not found." });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ error: "Incorrect security password mapping parameters." });
+
+        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
+        res.json({ token, username: user.username });
+    } catch (err) {
+        res.status(500).json({ error: "Login server pipeline failure error." });
+    }
+});
 // --- (Keep your app.get, app.delete, and app.listen blocks below exactly the same) ---
 
 // CRITICAL: Make sure it says '/api/items/:id' (with a colon)
