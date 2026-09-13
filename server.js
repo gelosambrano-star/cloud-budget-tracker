@@ -47,14 +47,32 @@ mongoose.connect(myDirectLink)
       //  res.status(500).json({ error: "Failed to save item." });
     //}
 //});
-// 1. Upgraded Schema to support category fields
+
+
+
+
+
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+// A placeholder strong secret token signature for local verification steps
+const JWT_SECRET = process.env.JWT_SECRET || "SUPER_SECRET_SECURITY_NODE_SIGNATURE";
+
+// 1. Brand New User Identity Profile Blueprint
+const UserSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true, trim: true },
+    password: { type: String, required: true }
+});
+const User = mongoose.model('User', UserSchema);
+
+// 2. Upgraded Item Blueprint linked straight to an owner id string parameter
 const ItemSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Ties to owner account
     text: { type: String, required: true },
     amount: { type: Number, required: true },
-    category: { type: String, default: "💡 Bills" }, // Stores category string + emoji
+    category: { type: String, default: "🍔 Food" },
     createdAt: { type: Date, default: Date.now }
 });
-
 const Item = mongoose.model('Item', ItemSchema);
 
 // 2. Map incoming category values from frontend payload
