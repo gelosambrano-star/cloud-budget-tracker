@@ -18,7 +18,7 @@ body {
     backdrop-filter: blur(12px); 
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.5); 
-    border-radius: 20px;
+    border-radius: 24px; /* Soft sleek layout wrap */
     box-shadow: 0 10px 35px 0 rgba(31, 38, 135, 0.15);
     padding: 30px;
     width: 100%;
@@ -49,9 +49,9 @@ h2 { font-size: 24px; }
 /* Custom Uniform Sizing Rules for Glass Field Controls */
 .input-box input, 
 .input-box select {
-    padding: 12px;
+    padding: 12px 20px;
     border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 10px;
+    border-radius: 35px; /* ✨ UPGRADED: Pill layout formatting matching buttons */
     font-size: 15px;
     background: rgba(255, 255, 255, 0.8);
     color: #2c3e50;
@@ -74,17 +74,17 @@ h2 { font-size: 24px; }
 #category-input { flex: 1; min-width: 120px; cursor: pointer; }
 
 /* ==========================================================================
-   🔑 REFACTORED AUTHENTICATION BUTTON COMPONENTS (POLISHED DESIGN)
+   🔑 REFACTORED BUTTON COMPONENTS WITH 35px PILL BORDER-RADIUS
    ========================================================================== */
-#login-btn, #register-btn, #submit-btn {
+#login-btn, #register-btn, #submit-btn, #logout-btn {
     border: none;
-    padding: 12px 20px;
-    border-radius: 10px;
-    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 35px; /* ✨ CRITICAL FIX: Smooth rounded 30px-40px structure */
     font-size: 15px;
     font-weight: bold;
     transition: all 0.2s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
 }
 
 /* Primary Action Login Button */
@@ -119,8 +119,20 @@ h2 { font-size: 24px; }
     box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
 }
 
-button:active {
-    transform: scale(0.98);
+/* ✨ REFACTORED: Vibrant Orange Custom Logout Button Layout */
+#logout-btn {
+    background-color: #ff9f43; /* Smooth corporate orange theme */
+    color: white;
+    padding: 8px 18px;
+    font-size: 13px;
+}
+#logout-btn:hover {
+    background-color: #ee5253; /* Transitions to a warning red overlay state on hover */
+    box-shadow: 0 4px 12px rgba(238, 82, 83, 0.3);
+}
+
+button:active, #logout-btn:active {
+    transform: scale(0.97);
 }
 
 /* Grid Dashboard Calculations Framework */
@@ -138,7 +150,7 @@ button:active {
     border: 1px solid rgba(255, 255, 255, 0.4);
     padding: 14px 8px;
     text-align: center;
-    border-radius: 14px;
+    border-radius: 16px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
@@ -156,7 +168,7 @@ li {
     padding: 14px 18px;
     margin-bottom: 12px;
     border-left: 6px solid #3498db;
-    border-radius: 12px;
+    border-radius: 16px; /* Uniform curves */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -185,7 +197,7 @@ li:hover { transform: translateY(-1px); }
    ========================================================================== */
 @media (max-width: 480px) {
     body { padding: 10px; }
-    .container { padding: 20px 15px; border-radius: 16px; }
+    .container { padding: 20px 15px; border-radius: 20px; }
     .input-box { flex-direction: column; gap: 10px; }
     
     #item-input, #amount-input, #category-input, #submit-btn,
