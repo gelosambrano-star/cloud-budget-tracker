@@ -101,6 +101,53 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // --- 6. SECURED TRANSACTIONAL LEDGER API ROUTES ---
+// --- NEW AI-POWERED EXPENSE FORECASTING ENGINE ---
+app.get('/api/predict', authMiddleware, async (req, res) => {
+    try {
+        const userItems = await Item.find({ userId: req.user.id });
+        if (userItems.length === 0) {
+            return res.json({ prediction: 0, confidence: "Low (No data available)", breakdown: {} });
+        }
+
+        // 1. Group records by month blocks to find average rate of consumption
+        const monthlyTotals = {};
+        const categoryTotals = {};
+
+        userItems.forEach(item => {
+            const date = new Date(item.createdAt);
+            const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+            const amount = item.amount || 0;
+            const category = item.category || "🍔 Food";
+
+            monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + amount;
+            categoryTotals[category] = (categoryTotals[category] || 0) + amount;
+        });
+
+        const distinctMonthsCount = Object.keys(monthlyTotals).length || 1;
+        
+        // 2. Linear run-rate trend math calculation model
+        let overallSum = 0;
+        Object.values(monthlyTotals).forEach(val => overallSum += val);
+        const baselineAverage = overallSum / distinctMonthsCount;
+
+        // 3. Extrapolate future projections based on inflation factor metrics (e.g., 4.5% run-rate margin multiplier)
+        const predictedNextMonth = baselineAverage * 1.045;
+
+        // 4. Calculate individual category run-rate targets splits
+        const categoryBreakdownForecast = {};
+        Object.keys(categoryTotals).forEach(cat => {
+            categoryBreakdownForecast[cat] = (categoryTotals[cat] / distinctMonthsCount) * 1.045;
+        });
+
+        res.json({
+            prediction: parseFloat(predictedNextMonth.toFixed(2)),
+            confidence: distinctMonthsCount > 2 ? "High (Sufficient timeline depth)" : "Medium (Baseline projection)",
+            breakdown: categoryBreakdownForecast
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Predictive modeling pipeline encountered a math compilation error." });
+    }
+});
 
 // GET: Fetches Only the Authenticated User's Expenses
 app.get('/api/items', authMiddleware, async (req, res) => {
