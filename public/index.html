@@ -3,51 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Budget Tracker</title>
+    <title>Enterprise Cloud Budget Suite</title>
     <link rel="stylesheet" href="/style.css">
+    <!-- ChartJS Visualization Library Script Core Injection -->
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
+
     <!-- Beautiful Floating Glass Account Access Panel View Screen Component -->
-    <div id="auth-container" class="container" style="margin-bottom: 20px;">
-        <h2 id="auth-title" style="text-align: center; color: #2c3e50;">🔒 Secure Account Gateway</h2>
+    <div id="auth-container" class="container">
+        <h2>🔒 Secure Account Gateway</h2>
         <div class="input-box" style="flex-direction: column; gap: 12px;">
             <input type="text" id="auth-user" placeholder="Create your unique profile account username...">
             <input type="password" id="auth-pass" placeholder="Enter password protection layout parameter tokens...">
             <div style="display: flex; gap: 10px; width: 100%;">
-                <button id="login-btn" style="flex: 1; background: #3498db;">Sign In</button>
-                <button id="register-btn" style="flex: 1; background: #7f8c8d;">Sign Up</button>
+                <button id="login-btn" style="flex: 1;">Sign In</button>
+                <button id="register-btn" style="flex: 1;">Sign Up</button>
             </div>
         </div>
     </div>
 
-    <!-- Wrap your existing tracker hub container inside a hidden wrapper container state block -->
+    <!-- Main Core Operational Workspace Wrapper Panel Container -->
     <div id="app-container" class="container" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <span id="welcome-banner" style="font-weight: bold; color: #2c3e50;">Welcome Back!</span>
-            <button id="logout-btn" style="background: #e74c3c; padding: 6px 12px; font-size: 12px;">Logout</button>
+            <button id="logout-btn">Logout</button>
         </div>
-        <!-- ... Leave your full tracking grids, statistics cards, and canvas history lists blocks inside exactly the same as before ... -->
 
-    <div class="container">
         <h1>📊 Cloud Budget Tracker</h1>
         
-        <!-- Input section for both Name and Cost -->
+        <!-- Interactive Transaction Injection Interface Panel -->
         <div class="input-box">
-    <input type="text" id="item-input" placeholder="Expense name (e.g., Grocery)">
-    <input type="number" id="amount-input" placeholder="₱ Amount" step="0.01">
-    
-    <!-- New Category Selection Dropdown Menu -->
-    <select id="category-input">
-        <option value="🍔 Food">🍔 Food</option>
-        <option value="🚗 Transport">🚗 Transport</option>
-        <option value="💡 Bills">💡 Bills</option>
-        <option value="🎮 Entertainment">🎮 Fun</option>
-    </select>
-    
-    <button id="submit-btn">Add Expense</button>
-</div>
+            <input type="text" id="item-input" placeholder="Expense name (e.g., Grocery)">
+            <input type="number" id="amount-input" placeholder="₱ Amount" step="0.01">
+            <select id="category-input">
+                <option value="🍔 Food">🍔 Food</option>
+                <option value="🚗 Transport">🚗 Transport</option>
+                <option value="💡 Bills">💡 Bills</option>
+                <option value="🎮 Entertainment">🎮 Fun</option>
+            </select>
+            <button id="submit-btn">Add Expense</button>
+        </div>
 
-        <!-- Metric Displays for Timeframes -->
+        <!-- Metric Timeline Accumulators Blocks Grid Framework -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h4>📅 This Week</h4>
@@ -63,7 +61,31 @@
             </div>
         </div>
 
-        <h3>Recent History:</h3>
+        <!-- ✨ NEW MODULE A: AI EXPENSE FORECASTING METRICS BOX -->
+        <div class="stat-card" style="margin-bottom: 25px; padding: 16px; text-align: left; border-top: 4px solid #ff9f43;">
+            <h4 style="margin: 0 0 8px 0; color: #ff9f43;">🔮 AI Next-Month Expenditure Forecast</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="predict-total" style="font-size: 22px; font-weight: bold; color: #2c3e50;">₱0.00</span>
+                <span id="predict-confidence" style="font-size: 11px; background: rgba(255,159,67,0.2); padding: 4px 10px; border-radius: 20px; font-weight: bold; color: #d35400;">Analyzing...</span>
+            </div>
+            <p style="margin: 6px 0 0 0; font-size: 12px; color: #7f8c8d;">Projected runway trend matrix based on historical consumer consumption velocity fields mapping parameters.</p>
+        </div>
+
+        <!-- ✨ NEW MODULE B: ANIMATED DOUGHNUT VISUALIZATION CANVAS CARD -->
+        <div class="stat-card" style="margin-bottom: 25px; padding: 20px; display: block;">
+            <h4 style="margin-bottom: 15px; color: #3498db;">📈 Category Spending Breakdown</h4>
+            <div style="max-width: 240px; margin: 0 auto;">
+                <canvas id="budgetChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Utility Action Tools Dashboard Row Splitter -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3>Recent History:</h3>
+            <!-- ✨ NEW MODULE C: DATA COMPILATION SPREADSHEET EXPORTER ACTION -->
+            <button id="export-btn" style="background-color: #34495e; padding: 8px 16px; font-size: 12px; border-radius: 30px;">📥 Export Ledger (.CSV)</button>
+        </div>
+
         <ul id="items-list"></ul>
     </div>
 
