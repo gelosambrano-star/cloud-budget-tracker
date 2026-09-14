@@ -28,7 +28,7 @@ const predictTotalDisplay = document.getElementById('predict-total');
 const predictConfidenceDisplay = document.getElementById('predict-confidence');
 
 let budgetChartInstance = null;
-let currentLoadedItemsCachedArray = []; // Stores recent database objects state memory cache for smooth exports calculations
+let currentLoadedItemsCachedArray = [];
 
 // --- 2. AUTHENTICATION GATEWAY MIDDLEWARE STATE HANDLERS ---
 
@@ -84,7 +84,7 @@ function checkAuthSession() {
     const username = localStorage.getItem('budget_username');
 
     if (token) {
-        authContainer.style.setExpression ? authContainer.style.setExpression('display', 'none') : authContainer.style.display = 'none';
+        authContainer.style.display = 'none';
         appContainer.style.display = 'block';
         welcomeBanner.textContent = `👋 Welcome back, ${username}!`;
         loadItems();
@@ -126,7 +126,9 @@ function calculateTimeframes(items) {
 }
 
 function renderChart(categoryTotals) {
-    const ctx = document.getElementById('budgetChart').getContext('2d');
+    const canvas = document.getElementById('budgetChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (budgetChartInstance) budgetChartInstance.destroy();
 
     budgetChartInstance = new Chart(ctx, {
@@ -146,7 +148,7 @@ function renderChart(categoryTotals) {
     });
 }
 
-// --- 4. ✨ NEW FEATURE A: FETCH AI DATA MODEL RUNWAY FORECAST ---
+// --- 4. NEW FEATURE A: FETCH AI DATA MODEL RUNWAY FORECAST ---
 async function loadForecastMetrics() {
     const token = localStorage.getItem('budget_token');
     try {
@@ -162,28 +164,25 @@ async function loadForecastMetrics() {
     }
 }
 
-// --- 5. ✨ NEW FEATURE B: SPREADSHEET EXPORTER (.CSV ENCODER INTERFACE) ---
+// --- 5. NEW FEATURE B: SPREADSHEET EXPORTER (.CSV ENCODER INTERFACE) ---
 exportBtn.addEventListener('click', () => {
     if (currentLoadedItemsCachedArray.length === 0) return alert("Your transactional history data array registry is empty. Log some spending logs first!");
 
-    // 1. Build spreadsheet header block metadata matrix
     let csvContent = "data:text/csv;charset=utf-8,ID,Expense Item Name,Cost Amount (PHP),Category Tag,Logging Creation Timestamp\n";
 
-    // 2. Loop and sanitize row columns strings arrays structures
     currentLoadedItemsCachedArray.forEach((item, index) => {
-        const sanitizedText = item.text.replace(/,/g, " "); // Strip commas to prevent CSV column splitting bugs
+        const sanitizedText = item.text.replace(/,/g, " ");
         const rowLine = `${index + 1},${sanitizedText},${item.amount},${item.category},${item.createdAt}`;
         csvContent += rowLine + "\n";
     });
 
-    // 3. Mount data stream onto virtual download vector anchor tag pipeline links
     const encodedUri = encodeURI(csvContent);
     const downloadAnchor = document.createElement("a");
     downloadAnchor.setAttribute("href", encodedUri);
     downloadAnchor.setAttribute("download", `budget_ledger_report_${new Date().toISOString().slice(0,10)}.csv`);
     document.body.appendChild(downloadAnchor);
     
-    downloadAnchor.click(); // Trigger browser file save pipeline workflow down to local storage folder maps
+    downloadAnchor.click();
     document.body.removeChild(downloadAnchor);
 });
 
@@ -198,10 +197,10 @@ async function loadItems() {
         const items = await response.json();
         if (response.status === 401) return logoutBtn.click();
 
-        currentLoadedItemsCachedArray = items; // Cache array maps references pointers memory instantly
+        currentLoadedItemsCachedArray = items;
         itemsList.innerHTML = '';
         calculateTimeframes(items);
-        loadForecastMetrics(); // Run predictive projection equations in sync loops
+        loadForecastMetrics();
 
         items.forEach(item => {
             const li = document.createElement('li');
@@ -236,3 +235,22 @@ async function loadItems() {
             deleteBtn.className = 'delete-btn';
 
             deleteBtn.addEventListener('click', async () => {
+                await fetch(`/api/items/${item._id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                loadItems();
+            });
+
+            rightContainer.appendChild(spanPrice);
+            rightContainer.appendChild(deleteBtn);
+
+            li.appendChild(leftContainer);
+            li.appendChild(rightContainer);
+            itemsList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Error compiling core server assets layers packages maps:", error);
+    }
+}
+
