@@ -37,87 +37,95 @@ const predictConfidenceDisplay = document.getElementById('predict-confidence');
 
 let currentLoadedItemsCachedArray = [];
 
-// --- 2. ✨ SCREEN TRANSITION LINK TOGGLE LIFECYCLES ---
-goToRegisterLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    authContainer.style.display = 'none';
-    registerContainer.style.display = 'block';
-});
+// --- 2. SCREEN TRANSITION LINK TOGGLE LIFECYCLES ---
+if (goToRegisterLink) {
+    goToRegisterLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        authContainer.style.display = 'none';
+        registerContainer.style.display = 'block';
+    });
+}
 
-goToLoginLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    registerContainer.style.display = 'none';
-    authContainer.style.display = 'block';
-});
+if (goToLoginLink) {
+    goToLoginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        registerContainer.style.display = 'none';
+        authContainer.style.display = 'block';
+    });
+}
 
 // --- 3. AUTHENTICATION GATEWAY MIDDLEWARE STATE HANDLERS ---
+if (registerBtn) {
+    registerBtn.addEventListener('click', async () => {
+        const username = regUser.value.trim();
+        const password = regPass.value.trim();
+        const passwordConfirm = regPassConfirm.value.trim();
 
-registerBtn.addEventListener('click', async () => {
-    const username = regUser.value.trim();
-    const password = regPass.value.trim();
-    const passwordConfirm = regPassConfirm.value.trim();
+        if (!username || !password || !passwordConfirm) return alert("Please fill out all registration fields.");
+        if (password !== passwordConfirm) return alert("Registration error: Passwords do not match!");
 
-    if (!username || !password || !passwordConfirm) return alert("Please fill out all registration fields.");
-    if (password !== passwordConfirm) return alert("Registration error: Passwords do not match!");
+        try {
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.error) return alert(data.error);
+            
+            alert("Account registered successfully! Redirecting to Sign In screen...");
+            goToLoginLink.click();
+            authUser.value = username;
+            regUser.value = ''; regPass.value = ''; regPassConfirm.value = '';
+        } catch (err) { console.error(err); }
+    });
+}
 
-    try {
-        const res = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-        const data = await res.json();
-        if (data.error) return alert(data.error);
-        
-        alert("Account registered successfully! Redirecting to Sign In screen...");
-        goToLoginLink.click(); // Automatically toggle back to login screen layout
-        authUser.value = username; // Pre-fill username for convenience
-        regUser.value = ''; regPass.value = ''; regPassConfirm.value = '';
-    } catch (err) { console.error(err); }
-});
+if (loginBtn) {
+    loginBtn.addEventListener('click', async () => {
+        const username = authUser.value.trim();
+        const password = authPass.value.trim();
+        if (!username || !password) return alert("Please type your username and password.");
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.error) return alert(data.error);
+            localStorage.setItem('budget_token', data.token);
+            localStorage.setItem('budget_username', data.username);
+            checkAuthSession();
+        } catch (err) { console.error(err); }
+    });
+}
 
-loginBtn.addEventListener('click', async () => {
-    const username = authUser.value.trim();
-    const password = authPass.value.trim();
-    if (!username || !password) return alert("Please type your username and password.");
-    try {
-        const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-        const data = await res.json();
-        if (data.error) return alert(data.error);
-        localStorage.setItem('budget_token', data.token);
-        localStorage.setItem('budget_username', data.username);
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('budget_token');
+        localStorage.removeItem('budget_username');
         checkAuthSession();
-    } catch (err) { console.error(err); }
-});
-
-logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('budget_token');
-    localStorage.removeItem('budget_username');
-    checkAuthSession();
-});
+    });
+}
 
 function checkAuthSession() {
     const token = localStorage.getItem('budget_token');
     const username = localStorage.getItem('budget_username');
     if (token) {
-        authContainer.style.display = 'none';
-        registerContainer.style.display = 'none';
-        appContainer.style.display = 'block';
-        welcomeBanner.textContent = `👋 Welcome back, ${username}!`;
+        if (authContainer) authContainer.style.display = 'none';
+        if (registerContainer) registerContainer.style.display = 'none';
+        if (appContainer) appContainer.style.display = 'block';
+        if (welcomeBanner) welcomeBanner.textContent = `👋 Welcome back, ${username}!`;
         loadItems();
     } else {
-        appContainer.style.display = 'none';
-        registerContainer.style.display = 'none';
-        authContainer.style.display = 'block';
+        if (appContainer) appContainer.style.display = 'none';
+        if (registerContainer) registerContainer.style.display = 'none';
+        if (authContainer) authContainer.style.display = 'block';
     }
 }
 
 // --- 4. DYNAMIC DATA ACCUMULATION VISUALIZATIONS & TIME DATA MATHS ---
-
 function calculateTimeframes(items) {
     const now = new Date();
     let dailySum = 0, weeklySum = 0, monthlySum = 0, yearlySum = 0;
@@ -137,10 +145,10 @@ function calculateTimeframes(items) {
             if (daysDifference <= 7) weeklySum += amount;
         }
     });
-    dailyDisplay.textContent = `₱${dailySum.toFixed(2)}`;
-    weeklyDisplay.textContent = `₱${weeklySum.toFixed(2)}`;
-    monthlyDisplay.textContent = `₱${monthlySum.toFixed(2)}`;
-    yearlyDisplay.textContent = `₱${yearlySum.toFixed(2)}`;
+    if (dailyDisplay) dailyDisplay.textContent = `₱${dailySum.toFixed(2)}`;
+    if (weeklyDisplay) weeklyDisplay.textContent = `₱${weeklySum.toFixed(2)}`;
+    if (monthlyDisplay) monthlyDisplay.textContent = `₱${monthlySum.toFixed(2)}`;
+    if (yearlyDisplay) yearlyDisplay.textContent = `₱${yearlySum.toFixed(2)}`;
     renderPureVisualBars(categoryTotals, yearlySum);
 }
 
@@ -171,25 +179,27 @@ async function loadForecastMetrics() {
     try {
         const response = await fetch('/api/predict', { headers: { 'Authorization': `Bearer ${token}` } });
         const forecastData = await response.json();
-        predictTotalDisplay.textContent = `₱${(forecastData.prediction || 0).toFixed(2)}`;
-        predictConfidenceDisplay.textContent = forecastData.confidence || "Baseline Model";
+        if (predictTotalDisplay) predictTotalDisplay.textContent = `₱${(forecastData.prediction || 0).toFixed(2)}`;
+        if (predictConfidenceDisplay) predictConfidenceDisplay.textContent = forecastData.confidence || "Baseline Model";
     } catch (err) { console.error(err); }
 }
 
-exportBtn.addEventListener('click', () => {
-    if (currentLoadedItemsCachedArray.length === 0) return alert("Ledger empty.");
-    let csvContent = "data:text/csv;charset=utf-8,ID,Item Name,Amount,Category,Timestamp\n";
-    currentLoadedItemsCachedArray.forEach((item, index) => {
-        csvContent += `${index + 1},${item.text.replace(/,/g, " ")},${item.amount},${item.category},${item.createdAt}\n`;
+if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+        if (currentLoadedItemsCachedArray.length === 0) return alert("Ledger empty.");
+        let csvContent = "data:text/csv;charset=utf-8,ID,Item Name,Amount,Category,Timestamp\n";
+        currentLoadedItemsCachedArray.forEach((item, index) => {
+            csvContent += `${index + 1},${item.text.replace(/,/g, " ")},${item.amount},${item.category},${item.createdAt}\n`;
+        });
+        const encodedUri = encodeURI(csvContent);
+        const downloadAnchor = document.createElement("a");
+        downloadAnchor.setAttribute("href", encodedUri);
+        downloadAnchor.setAttribute("download", "report.csv");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        document.body.removeChild(downloadAnchor);
     });
-    const encodedUri = encodeURI(csvContent);
-    const downloadAnchor = document.createElement("a");
-    downloadAnchor.setAttribute("href", encodedUri);
-    downloadAnchor.setAttribute("download", "report.csv");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    document.body.removeChild(downloadAnchor);
-});
+}
 
 async function loadItems() {
     const token = localStorage.getItem('budget_token');
@@ -198,25 +208,11 @@ async function loadItems() {
         const items = await response.json();
         if (response.status === 401) return logoutBtn.click();
         currentLoadedItemsCachedArray = items;
-        itemsList.innerHTML = '';
-        calculateTimeframes(items);
-        loadForecastMetrics();
-        items.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <div style="display:flex; flex-direction:column; gap:4px;">
-                    <span class="item-text">${item.text}</span>
-                    <span style="font-size:12px; color:#7f8c8d; font-weight:500;">${item.category || "🍔 Food"}</span>
-                </div>
-                <div style="display:flex; align-items:center;">
-                    <span class="item-price">₱${(item.amount || 0).toFixed(2)}</span>
-                    <button class="delete-btn" onclick="deleteItem('${item._id}')">❌</button>
-                </div>
-            `;
-            itemsList.appendChild(li);
-        });
-    } catch (error) { console.error(error); }
-}
-
-window.deleteItem = async (id) => {
-    const token = localStorage.getItem('budget_token');
+        if (itemsList) {
+            itemsList.innerHTML = '';
+            calculateTimeframes(items);
+            loadForecastMetrics();
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:4px;">
