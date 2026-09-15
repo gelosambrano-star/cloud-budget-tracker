@@ -23,7 +23,7 @@ let currentLoadedItemsCachedArray = [];
 registerBtn.addEventListener('click', async () => {
     const username = authUser.value.trim();
     const password = authPass.value.trim();
-    if (!username || !password) return alert("Please fill out username and password.");
+    if (!username || !password) return alert("Fill out credentials.");
     try {
         const res = await fetch('/api/auth/register', {
             method: 'POST',
@@ -32,14 +32,14 @@ registerBtn.addEventListener('click', async () => {
         });
         const data = await res.json();
         if (data.error) return alert(data.error);
-        alert("Registration complete! You can now Sign In.");
+        alert("Registered! You can now Sign In.");
     } catch (err) { console.error(err); }
 });
 
 loginBtn.addEventListener('click', async () => {
     const username = authUser.value.trim();
     const password = authPass.value.trim();
-    if (!username || !password) return alert("Please fill out username and password.");
+    if (!username || !password) return alert("Fill out credentials.");
     try {
         const res = await fetch('/api/auth/login', {
             method: 'POST',
@@ -66,7 +66,7 @@ function checkAuthSession() {
     if (token) {
         authContainer.style.display = 'none';
         appContainer.style.display = 'block';
-        welcomeBanner.textContent = `\uD83D\uDC4B Welcome back, ${username}!`;
+        welcomeBanner.textContent = `👋 Welcome back, ${username}!`;
         loadItems();
     } else {
         authContainer.style.display = 'block';
@@ -108,10 +108,10 @@ function renderPureVisualBars(categoryTotals, totalYearlySum) {
         row.innerHTML = `
             <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; font-weight: 600;">
                 <span>${cat}</span>
-                <span style="color: #555;">₱${amount.toFixed(2)} (${percentage}%)</span>
+                <span>₱${amount.toFixed(2)} (${percentage}%)</span>
             </div>
             <div style="width: 100%; background: rgba(0,0,0,0.05); height: 10px; border-radius: 20px; overflow: hidden;">
-                <div style="width: ${percentage}%; background: ${colors[cat]}; height: 100%; border-radius: 20px; transition: width 0.4s ease;"></div>
+                <div style="width: ${percentage}%; background: ${colors[cat]}; height: 100%; transition: width 0.4s ease;"></div>
             </div>
         `;
         visualBreakdownBox.appendChild(row);
@@ -130,15 +130,14 @@ async function loadForecastMetrics() {
 
 exportBtn.addEventListener('click', () => {
     if (currentLoadedItemsCachedArray.length === 0) return alert("Ledger empty.");
-    let csvContent = "data:text/csv;charset=utf-8,ID,Expense Item Name,Cost Amount (PHP),Category Tag,Timestamp\n";
+    let csvContent = "data:text/csv;charset=utf-8,ID,Item Name,Amount,Category,Timestamp\n";
     currentLoadedItemsCachedArray.forEach((item, index) => {
-        const sanitizedText = item.text.replace(/,/g, " ");
-        csvContent += `${index + 1},${sanitizedText},${item.amount},${item.category},${item.createdAt}\n`;
+        csvContent += `${index + 1},${item.text.replace(/,/g, " ")},${item.amount},${item.category},${item.createdAt}\n`;
     });
     const encodedUri = encodeURI(csvContent);
     const downloadAnchor = document.createElement("a");
     downloadAnchor.setAttribute("href", encodedUri);
-    downloadAnchor.setAttribute("download", `report.csv`);
+    downloadAnchor.setAttribute("download", "report.csv");
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     document.body.removeChild(downloadAnchor);
@@ -156,57 +155,27 @@ async function loadItems() {
         loadForecastMetrics();
         items.forEach(item => {
             const li = document.createElement('li');
-            const leftContainer = document.createElement('div');
-            leftContainer.style.display = 'flex';
-            leftContainer.style.flexDirection = 'column';
-            leftContainer.style.gap = '4px';
-            const spanText = document.createElement('span');
-            spanText.className = 'item-text';
-            spanText.textContent = item.text;
-            const spanCategory = document.createElement('span');
-            spanCategory.style.fontSize = '12px';
-            spanCategory.style.color = '#7f8c8d';
-            spanCategory.style.fontWeight = '500';
-            spanCategory.textContent = item.category || "🍔 Food";
-            leftContainer.appendChild(spanText);
-            leftContainer.appendChild(spanCategory);
-            const rightContainer = document.createElement('div');
-            rightContainer.style.display = 'flex';
-            rightContainer.style.alignItems = 'center';
-            const spanPrice = document.createElement('span');
-            spanPrice.className = 'item-price';
-            spanPrice.textContent = `₱${(item.amount || 0).toFixed(2)}`;
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = '❌';
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.addEventListener('click', async () => {
-                await fetch(`/api/items/${item._id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
-                loadItems();
-            });
-            rightContainer.appendChild(spanPrice);
-            rightContainer.appendChild(deleteBtn);
-            li.appendChild(leftContainer);
-            li.appendChild(rightContainer);
+            li.innerHTML = `
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <span class="item-text">${item.text}</span>
+                    <span style="font-size:12px; color:#7f8c8d; font-weight:500;">${item.category || "🍔 Food"}</span>
+                </div>
+                <div style="display:flex; align-items:center;">
+                    <span class="item-price">₱${(item.amount || 0).toFixed(2)}</span>
+                    <button class="delete-btn" onclick="deleteItem('${item._id}')">❌</button>
+                </div>
+            `;
             itemsList.appendChild(li);
         });
     } catch (error) { console.error(error); }
 }
 
-submitBtn.addEventListener('click', async () => {
+window.deleteItem = async (id) => {
     const token = localStorage.getItem('budget_token');
-    const textValue = itemInput.value.trim();
-    const amountValue = parseFloat(amountInput.value);
-    const categoryValue = categoryInput.value;
-    if (!textValue || isNaN(amountValue) || amountValue <= 0) return alert("Enter valid item name and amount!");
-    try {
-        await fetch('/api/items', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ itemName: textValue, itemAmount: amountValue, itemCategory: categoryValue })
-        });
-        itemInput.value = '';
-        amountInput.value = '';
-        loadItems();
+    await fetch(`/api/items/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+    loadItems();
+};
+
 submitBtn.addEventListener('click', async () => {
     const token = localStorage.getItem('budget_token');
     const textValue = itemInput.value.trim();
@@ -226,3 +195,4 @@ submitBtn.addEventListener('click', async () => {
 });
 
 checkAuthSession();
+
