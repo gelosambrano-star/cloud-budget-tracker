@@ -216,3 +216,4 @@ async function loadItems() {
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:4px;">
+}
