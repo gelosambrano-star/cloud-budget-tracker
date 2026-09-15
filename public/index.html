@@ -8,20 +8,34 @@
 </head>
 <body>
 
-    <!-- Beautiful Floating Glass Account Access Panel View Screen Component -->
+    <!-- 🔒 MODULE A: SECURE SIGN IN GATEWAY CONTAINER -->
     <div id="auth-container" class="container">
-        <h2>🔒 Secure Account Gateway</h2>
+        <h2>🔒 Account Sign In</h2>
         <div class="input-box" style="flex-direction: column; gap: 12px;">
-            <input type="text" id="auth-user" placeholder="Create your unique profile account username...">
-            <input type="password" id="auth-pass" placeholder="Enter password protection layout parameter tokens...">
-            <div style="display: flex; gap: 10px; width: 100%;">
-                <button id="login-btn" style="flex: 1;">Sign In</button>
-                <button id="register-btn" style="flex: 1;">Sign Up</button>
-            </div>
+            <input type="text" id="auth-user" placeholder="Enter your username...">
+            <input type="password" id="auth-pass" placeholder="Enter your secret account password...">
+            <button id="login-btn" style="width: 100%;">Sign In</button>
+            <p style="text-align: center; margin: 10px 0 0 0; font-size: 14px; color: #555;">
+                New to the platform? <a href="#" id="go-to-register" style="color: #3498db; font-weight: bold; text-decoration: none;">Create an account →</a>
+            </p>
         </div>
     </div>
 
-    <!-- Main Core Operational Workspace Wrapper Panel Container -->
+    <!-- ✨ NEW MODULE B: DEDICATED NEW USER REGISTRATION ACCOUNT CREATION CONTAINER -->
+    <div id="register-container" class="container" style="display: none;">
+        <h2>✨ Create Fresh Profile</h2>
+        <div class="input-box" style="flex-direction: column; gap: 12px;">
+            <input type="text" id="reg-user" placeholder="Choose a unique username (e.g., gelo123)...">
+            <input type="password" id="reg-pass" placeholder="Create a strong account password...">
+            <input type="password" id="reg-pass-confirm" placeholder="Confirm your account password...">
+            <button id="register-btn" style="width: 100%; background-color: #9b59b6; color: white;">Complete Registration 🚀</button>
+            <p style="text-align: center; margin: 10px 0 0 0; font-size: 14px; color: #555;">
+                Already registered? <a href="#" id="go-to-login" style="color: #3498db; font-weight: bold; text-decoration: none;">← Back to Sign In</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- 📊 MODULE C: MAIN APP CONTENT MANAGEMENT CONSOLE WORKSPACE -->
     <div id="app-container" class="container" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <span id="welcome-banner" style="font-weight: bold; color: #2c3e50;">Welcome Back!</span>
@@ -30,7 +44,6 @@
 
         <h1>📊 Cloud Budget Tracker</h1>
         
-        <!-- Interactive Transaction Injection Interface Panel -->
         <div class="input-box">
             <input type="text" id="item-input" placeholder="Expense name (e.g., Grocery)">
             <input type="number" id="amount-input" placeholder="₱ Amount" step="0.01">
@@ -43,7 +56,6 @@
             <button id="submit-btn">Add Expense</button>
         </div>
 
-        <!-- ✨ CLEAN UNIFIED METRICS ROW: 4 Columns Balanced Timeline Tracker -->
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 30px;">
             <div class="stat-card" style="padding: 10px 2px;">
                 <h4 style="font-size: 10px; margin: 0 0 4px 0;">☀️ Today</h4>
@@ -63,7 +75,6 @@
             </div>
         </div>
 
-        <!-- AI EXPENSE FORECASTING METRICS BOX -->
         <div class="stat-card" style="margin-bottom: 25px; padding: 16px; text-align: left; border-top: 4px solid #ff9f43;">
             <h4 style="margin: 0 0 8px 0; color: #ff9f43;">🔮 AI Next-Month Expenditure Forecast</h4>
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -73,13 +84,11 @@
             <p style="margin: 6px 0 0 0; font-size: 12px; color: #7f8c8d;">Projected runway trend matrix based on historical consumer consumption velocity fields mapping parameters.</p>
         </div>
 
-        <!-- STABLE PROGRESS GRAPH BREAKDOWN METERS (NO EXTERNAL SCRIPTS REQUIRED) -->
         <div class="stat-card" style="margin-bottom: 25px; padding: 20px; text-align: left; display: block;">
             <h4 style="margin-bottom: 15px; color: #3498db; text-align: center;">📈 Category Spending Breakdown</h4>
             <div id="visual-breakdown-box" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
 
-        <!-- Utility Action Tools Dashboard Row Splitter -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3>Recent History:</h3>
             <button id="export-btn" style="background-color: #34495e; padding: 8px 16px; font-size: 12px; border-radius: 30px; color: white; border: none; cursor: pointer;">📥 Export Ledger (.CSV)</button>
