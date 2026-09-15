@@ -1,7 +1,20 @@
+// --- 1. CORE DOM COMPONENT INTERFACE ELEMENT SELECTORS ---
 const authContainer = document.getElementById('auth-container');
+const registerContainer = document.getElementById('register-container');
 const appContainer = document.getElementById('app-container');
+
+// Screen Transition Link Selectors
+const goToRegisterLink = document.getElementById('go-to-register');
+const goToLoginLink = document.getElementById('go-to-login');
+
+// Form Credentials Node Selectors
 const authUser = document.getElementById('auth-user');
 const authPass = document.getElementById('auth-pass');
+const regUser = document.getElementById('reg-user');
+const regPass = document.getElementById('reg-pass');
+const regPassConfirm = document.getElementById('reg-pass-confirm');
+
+// Control Action Buttons Selectors
 const loginBtn = document.getElementById('login-btn');
 const registerBtn = document.getElementById('register-btn');
 const logoutBtn = document.getElementById('logout-btn');
@@ -13,17 +26,40 @@ const categoryInput = document.getElementById('category-input');
 const itemsList = document.getElementById('items-list');
 const exportBtn = document.getElementById('export-btn');
 const visualBreakdownBox = document.getElementById('visual-breakdown-box');
+
+// Numeric Timeline Summaries Selectors
+const dailyDisplay = document.getElementById('total-daily');
 const weeklyDisplay = document.getElementById('total-weekly');
 const monthlyDisplay = document.getElementById('total-monthly');
 const yearlyDisplay = document.getElementById('total-yearly');
 const predictTotalDisplay = document.getElementById('predict-total');
 const predictConfidenceDisplay = document.getElementById('predict-confidence');
+
 let currentLoadedItemsCachedArray = [];
 
+// --- 2. ✨ SCREEN TRANSITION LINK TOGGLE LIFECYCLES ---
+goToRegisterLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    authContainer.style.display = 'none';
+    registerContainer.style.display = 'block';
+});
+
+goToLoginLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    registerContainer.style.display = 'none';
+    authContainer.style.display = 'block';
+});
+
+// --- 3. AUTHENTICATION GATEWAY MIDDLEWARE STATE HANDLERS ---
+
 registerBtn.addEventListener('click', async () => {
-    const username = authUser.value.trim();
-    const password = authPass.value.trim();
-    if (!username || !password) return alert("Fill out credentials.");
+    const username = regUser.value.trim();
+    const password = regPass.value.trim();
+    const passwordConfirm = regPassConfirm.value.trim();
+
+    if (!username || !password || !passwordConfirm) return alert("Please fill out all registration fields.");
+    if (password !== passwordConfirm) return alert("Registration error: Passwords do not match!");
+
     try {
         const res = await fetch('/api/auth/register', {
             method: 'POST',
@@ -32,14 +68,18 @@ registerBtn.addEventListener('click', async () => {
         });
         const data = await res.json();
         if (data.error) return alert(data.error);
-        alert("Registered! You can now Sign In.");
+        
+        alert("Account registered successfully! Redirecting to Sign In screen...");
+        goToLoginLink.click(); // Automatically toggle back to login screen layout
+        authUser.value = username; // Pre-fill username for convenience
+        regUser.value = ''; regPass.value = ''; regPassConfirm.value = '';
     } catch (err) { console.error(err); }
 });
 
 loginBtn.addEventListener('click', async () => {
     const username = authUser.value.trim();
     const password = authPass.value.trim();
-    if (!username || !password) return alert("Fill out credentials.");
+    if (!username || !password) return alert("Please type your username and password.");
     try {
         const res = await fetch('/api/auth/login', {
             method: 'POST',
@@ -65,18 +105,22 @@ function checkAuthSession() {
     const username = localStorage.getItem('budget_username');
     if (token) {
         authContainer.style.display = 'none';
+        registerContainer.style.display = 'none';
         appContainer.style.display = 'block';
         welcomeBanner.textContent = `👋 Welcome back, ${username}!`;
         loadItems();
     } else {
-        authContainer.style.display = 'block';
         appContainer.style.display = 'none';
+        registerContainer.style.display = 'none';
+        authContainer.style.display = 'block';
     }
 }
 
+// --- 4. DYNAMIC DATA ACCUMULATION VISUALIZATIONS & TIME DATA MATHS ---
+
 function calculateTimeframes(items) {
     const now = new Date();
-    let weeklySum = 0, monthlySum = 0, yearlySum = 0;
+    let dailySum = 0, weeklySum = 0, monthlySum = 0, yearlySum = 0;
     const categoryTotals = { "🍔 Food": 0, "🚗 Transport": 0, "💡 Bills": 0, "🎮 Entertainment": 0 };
     items.forEach(item => {
         const itemDate = new Date(item.createdAt);
@@ -85,11 +129,15 @@ function calculateTimeframes(items) {
         if (categoryTotals[cat] !== undefined) categoryTotals[cat] += amount;
         if (itemDate.getFullYear() === now.getFullYear()) {
             yearlySum += amount;
-            if (itemDate.getMonth() === now.getMonth()) monthlySum += amount;
+            if (itemDate.getMonth() === now.getMonth()) {
+                monthlySum += amount;
+                if (itemDate.getDate() === now.getDate()) dailySum += amount;
+            }
             const daysDifference = (now.getTime() - itemDate.getTime()) / (1000 * 3600 * 24);
             if (daysDifference <= 7) weeklySum += amount;
         }
     });
+    dailyDisplay.textContent = `₱${dailySum.toFixed(2)}`;
     weeklyDisplay.textContent = `₱${weeklySum.toFixed(2)}`;
     monthlyDisplay.textContent = `₱${monthlySum.toFixed(2)}`;
     yearlyDisplay.textContent = `₱${yearlySum.toFixed(2)}`;
@@ -172,27 +220,3 @@ async function loadItems() {
 
 window.deleteItem = async (id) => {
     const token = localStorage.getItem('budget_token');
-    await fetch(`/api/items/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
-    loadItems();
-};
-
-submitBtn.addEventListener('click', async () => {
-    const token = localStorage.getItem('budget_token');
-    const textValue = itemInput.value.trim();
-    const amountValue = parseFloat(amountInput.value);
-    const categoryValue = categoryInput.value;
-    if (!textValue || isNaN(amountValue) || amountValue <= 0) return alert("Enter valid name and amount!");
-    try {
-        await fetch('/api/items', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ itemName: textValue, itemAmount: amountValue, itemCategory: categoryValue })
-        });
-        itemInput.value = '';
-        amountInput.value = '';
-        loadItems();
-    } catch (error) { console.error(error); }
-});
-
-checkAuthSession();
-
