@@ -50,19 +50,26 @@
                 <p id="total-yearly">₱0.00</p>
             </div>
         </div>
-        <div class="stat-card" style="margin-bottom: 25px; padding: 16px; text-align: left; border-top: 4px solid #ff9f43;">
-            <h4 style="margin: 0 0 8px 0; color: #ff9f43;">🔮 AI Next-Month Expenditure Forecast</h4>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span id="predict-total" style="font-size: 22px; font-weight: bold; color: #2c3e50;">₱0.00</span>
-                <span id="predict-confidence" style="font-size: 11px; background: rgba(255,159,67,0.2); padding: 4px 10px; border-radius: 20px; font-weight: bold; color: #d35400;">Analyzing...</span>
+                <!-- ✨ FULLY ALIGNED: 4-Column Balanced Summary Statistics Row -->
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 30px;">
+            <div class="stat-card" style="padding: 10px 2px;">
+                <h4 style="font-size: 10px; margin: 0 0 4px 0;">☀️ Today</h4>
+                <p id="total-daily" style="font-size: 13px; font-weight: bold; margin: 0;">₱0.00</p>
             </div>
-            <p style="margin: 6px 0 0 0; font-size: 12px; color: #7f8c8d;">Projected runway trend matrix based on historical consumer consumption velocity fields mapping parameters.</p>
+            <div class="stat-card" style="padding: 10px 2px;">
+                <h4 style="font-size: 10px; margin: 0 0 4px 0;">📅 This Week</h4>
+                <p id="total-weekly" style="font-size: 13px; font-weight: bold; margin: 0;">₱0.00</p>
+            </div>
+            <div class="stat-card" style="padding: 10px 2px;">
+                <h4 style="font-size: 10px; margin: 0 0 4px 0;">🗓️ This Month</h4>
+                <p id="total-monthly" style="font-size: 13px; font-weight: bold; margin: 0;">₱0.00</p>
+            </div>
+            <div class="stat-card" style="padding: 10px 2px;">
+                <h4 style="font-size: 10px; margin: 0 0 4px 0;">🌟 This Year</h4>
+                <p id="total-yearly style="font-size: 13px; font-weight: bold; margin: 0;">₱0.00</p>
+            </div>
         </div>
-        <div class="stat-card" style="margin-bottom: 25px; padding: 20px; text-align: left; display: block;">
-            <h4 style="margin-bottom: 15px; color: #3498db; text-align: center;">📈 Category Spending Breakdown</h4>
-            <div id="visual-breakdown-box" style="display: flex; flex-direction: column; gap: 12px;"></div>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+ <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3>Recent History:</h3>
             <button id="export-btn" style="background-color: #34495e; padding: 8px 16px; font-size: 12px; border-radius: 30px; color: white; border: none; cursor: pointer;">📥 Export Ledger (.CSV)</button>
         </div>
