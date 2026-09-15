@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +7,8 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
+    <!-- Beautiful Floating Glass Account Access Panel View Screen Component -->
     <div id="auth-container" class="container">
         <h2>🔒 Secure Account Gateway</h2>
         <div class="input-box" style="flex-direction: column; gap: 12px;">
@@ -19,12 +20,17 @@
             </div>
         </div>
     </div>
+
+    <!-- Main Core Operational Workspace Wrapper Panel Container -->
     <div id="app-container" class="container" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <span id="welcome-banner" style="font-weight: bold; color: #2c3e50;">Welcome Back!</span>
             <button id="logout-btn">Logout</button>
         </div>
+
         <h1>📊 Cloud Budget Tracker</h1>
+        
+        <!-- Interactive Transaction Injection Interface Panel -->
         <div class="input-box">
             <input type="text" id="item-input" placeholder="Expense name (e.g., Grocery)">
             <input type="number" id="amount-input" placeholder="₱ Amount" step="0.01">
@@ -36,12 +42,8 @@
             </select>
             <button id="submit-btn">Add Expense</button>
         </div>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h4>📅 This Week</h4>
-                <p id="total-weekly">₱0.00</p>
-            </div>
-             <!-- ✨ PERFECTLY BALANCED: Single 4-Column Timeframe Stats Grid Row -->
+
+        <!-- ✨ CLEAN UNIFIED METRICS ROW: 4 Columns Balanced Timeline Tracker -->
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 30px;">
             <div class="stat-card" style="padding: 10px 2px;">
                 <h4 style="font-size: 10px; margin: 0 0 4px 0;">☀️ Today</h4>
@@ -60,13 +62,32 @@
                 <p id="total-yearly" style="font-size: 13px; font-weight: bold; margin: 0;">₱0.00</p>
             </div>
         </div>
- <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+
+        <!-- AI EXPENSE FORECASTING METRICS BOX -->
+        <div class="stat-card" style="margin-bottom: 25px; padding: 16px; text-align: left; border-top: 4px solid #ff9f43;">
+            <h4 style="margin: 0 0 8px 0; color: #ff9f43;">🔮 AI Next-Month Expenditure Forecast</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="predict-total" style="font-size: 22px; font-weight: bold; color: #2c3e50;">₱0.00</span>
+                <span id="predict-confidence" style="font-size: 11px; background: rgba(255,159,67,0.2); padding: 4px 10px; border-radius: 20px; font-weight: bold; color: #d35400;">Analyzing...</span>
+            </div>
+            <p style="margin: 6px 0 0 0; font-size: 12px; color: #7f8c8d;">Projected runway trend matrix based on historical consumer consumption velocity fields mapping parameters.</p>
+        </div>
+
+        <!-- STABLE PROGRESS GRAPH BREAKDOWN METERS (NO EXTERNAL SCRIPTS REQUIRED) -->
+        <div class="stat-card" style="margin-bottom: 25px; padding: 20px; text-align: left; display: block;">
+            <h4 style="margin-bottom: 15px; color: #3498db; text-align: center;">📈 Category Spending Breakdown</h4>
+            <div id="visual-breakdown-box" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+
+        <!-- Utility Action Tools Dashboard Row Splitter -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3>Recent History:</h3>
             <button id="export-btn" style="background-color: #34495e; padding: 8px 16px; font-size: 12px; border-radius: 30px; color: white; border: none; cursor: pointer;">📥 Export Ledger (.CSV)</button>
         </div>
+
         <ul id="items-list"></ul>
     </div>
+
     <script src="/script.js"></script>
 </body>
 </html>
-
