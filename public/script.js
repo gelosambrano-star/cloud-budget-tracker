@@ -207,3 +207,22 @@ submitBtn.addEventListener('click', async () => {
         itemInput.value = '';
         amountInput.value = '';
         loadItems();
+submitBtn.addEventListener('click', async () => {
+    const token = localStorage.getItem('budget_token');
+    const textValue = itemInput.value.trim();
+    const amountValue = parseFloat(amountInput.value);
+    const categoryValue = categoryInput.value;
+    if (!textValue || isNaN(amountValue) || amountValue <= 0) return alert("Enter valid name and amount!");
+    try {
+        await fetch('/api/items', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ itemName: textValue, itemAmount: amountValue, itemCategory: categoryValue })
+        });
+        itemInput.value = '';
+        amountInput.value = '';
+        loadItems();
+    } catch (error) { console.error(error); }
+});
+
+checkAuthSession();
