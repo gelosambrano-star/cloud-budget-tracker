@@ -1,4 +1,3 @@
-cat << 'EOF' > public/script.js
 const authContainer = document.getElementById('auth-container');
 const appContainer = document.getElementById('app-container');
 const authUser = document.getElementById('auth-user');
